@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import './App.css';
 import ElevatorForm from './components/elevatorForm';
 import RadioForm from './components/radioForm';
-import { goToFloor, generateElevators, generatePassengers, orderElevatorStops } from './util';
-import { Container, Header, Message, Grid } from 'semantic-ui-react';
+import { goToFloor, generateElevators, generatePassengers, orderElevatorStops, calculateTotalTravelTime } from './util';
+import { Container, Message, Grid } from 'semantic-ui-react';
 import Passenger from './models/passenger';
-import elevator from "./models/elevator";
 
 function App() {
 		const initialFormState = { elevators: 2, floors: 10, passengerFloor: 0, passengerDestination: 0 };
@@ -49,10 +48,11 @@ function App() {
 				console.log('level2');
 				const { elevators, floors } = formData;
 				const selectedElevators = [];
-				// const passengers = Math.floor(Math.random() * (6)) + 5; // random from 5 to 10
-				const passengers = 4; // TODO change back to random
+				const passengers = Math.floor(Math.random() * (6)) + 5; // random from 5 to 10
 				const passengersArray = generatePassengers(passengers, floors);
 				const elevatorsArray = generateElevators(elevators, floors);
+				let totalTime = 0;
+
 				passengersArray.forEach((passenger) => {
 						const { elevator: chosenElevatorForPassenger, isOnWay } = goToFloor(passenger, elevatorsArray);
 
@@ -61,8 +61,13 @@ function App() {
 						}
 						orderElevatorStops(passenger, chosenElevatorForPassenger, isOnWay);
 				});
+
+				selectedElevators.forEach((elevator) => {
+						totalTime = totalTime + calculateTotalTravelTime(elevator); // default set to 2 seconds per floor
+				});
 				console.log(selectedElevators);
 				console.log(passengersArray);
+				console.log(totalTime);
 		};
 
 		return (

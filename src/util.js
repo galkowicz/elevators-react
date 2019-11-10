@@ -91,8 +91,16 @@ export function orderElevatorStops(passenger, elevator, isOnWay) {
 						elevator.addStop(passenger.destination);
 				}
 		}
-		console.log('--------- new passenger ---------');
-		console.log(passenger, elevator, elevator.getElevatorProximity(passenger, elevator.stops));
+}
+
+export function calculateTotalTravelTime(elevator, timeForFloor = 2) {
+		return timeForFloor * elevator.stops.reduce((a, b, index, array) => {
+				if (index === 1) {
+						return Math.abs(a - b);
+				} else {
+						return a + Math.abs(array[index - 1] - b);
+				}
+		})
 }
 
 export function getDirection(from, to) {
