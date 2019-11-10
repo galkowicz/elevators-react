@@ -44,7 +44,6 @@ export function generateElevators(amount, buildingFloors) {
 }
 
 export function generatePassengers(amount, buildingFloors) {
-		console.log(buildingFloors);
 		let passengerArray = [];
 
 		for (let i = 0; i < Number(amount); i++) {
@@ -62,34 +61,62 @@ export function generatePassengers(amount, buildingFloors) {
 
 export function orderElevatorStops(passenger, elevator, isOnWay) {
 		const lastStop = elevator.stops.slice(-1)[0];
-		const oneBeforeLastStop = elevator.stops.slice(-2)[0];
 		const stopsLength = elevator.stops.length;
 
+		if (elevator.currentDirection === IDLE) {
+				if (passenger.direction === UP) {
+						if (passenger.currentFloor < lastStop) {
+								elevator.addStop(passenger.currentFloor);
+								elevator.addStop(passenger.destination);
+						} else {
+								elevator.stops[stopsLength - 1] = passenger.destination;
+						}
+				} else {
+						if (passenger.currentFloor > lastStop) {
+								elevator.addStop(passenger.currentFloor);
+								elevator.addStop(passenger.destination);
+						} else {
+								elevator.stops[stopsLength - 1] = passenger.destination;
+						}
+				}
+				return;
+		}
+
 		if (!isOnWay) { // not on current route so add new stop/s
-				if (passenger.currentFloor !== lastStop) { // passenger.current diff then last stop
-						if (elevator.currentDirection === passenger.direction) {
+						if (elevator.currentDirection === passenger.direction) { // both on same direction
 								if (passenger.direction === UP) { // both going up
-										if (passenger.destination > oneBeforeLastStop) {
+										if (passenger.destination >= lastStop) {
 												elevator.stops[stopsLength - 1] = passenger.destination; // replace last stop
 										} else {
 												elevator.addStop(passenger.currentFloor);
 												elevator.addStop(passenger.destination);
 										}
 								} else { // both going down
-										if (passenger.currentFloor < oneBeforeLastStop) {
+										if (passenger.currentFloor <= lastStop) {
 												elevator.stops[stopsLength - 1] = passenger.destination; // replace last stop
 										} else {
 												elevator.addStop(passenger.currentFloor);
 												elevator.addStop(passenger.destination);
 										}
 								}
-						} else {
-								elevator.addStop(passenger.currentFloor);
-								elevator.addStop(passenger.destination);
+						} else { // not on same direction
+								if (passenger.direction === UP) { // passenger goes up elevator goes down
+										if (passenger.currentFloor <= lastStop) {
+												elevator.stops[stopsLength - 1] = passenger.currentFloor;
+												elevator.addStop(passenger.destination);
+										} else {
+												elevator.addStop(passenger.currentFloor);
+												elevator.addStop(passenger.destination);
+										}
+								} else { // passenger goes down elevator goes up
+										if (passenger.currentFloor >= lastStop) {
+												elevator.stops[stopsLength - 1] = passenger.currentFloor;
+												elevator.addStop(passenger.destination);
+										} else {
+												elevator.addStop(passenger.destination);
+										}
+								}
 						}
-				} else {// passenger current is elevator last
-						elevator.addStop(passenger.destination);
-				}
 		}
 }
 

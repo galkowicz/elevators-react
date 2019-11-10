@@ -30,7 +30,7 @@ export default class RadioForm extends Component {
 							</Form.Field>
 							<Form.Field>
 									<Radio
-										label='Level 2 - Random'
+										label='Level 2 - Random amount of passengers (5-10)'
 										name='radioGroup'
 										value='level2'
 										checked={this.state.value === 'level2'}
