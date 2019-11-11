@@ -43,18 +43,18 @@ it('getDirection should return IDLE when passenger going 0 -> undefined', functi
 		expect(status).toEqual(IDLE);
 });
 
-it('orderElevatorStops should edit elevator stops to [4, 0, 3, 5] when passenger goes 3 -> 5 and elevator stops are [4,0]', function() {
+it('orderElevatorStops should edit elevator stops to [4, 0, 5] when passenger goes 3 -> 5 and elevator stops are [4,0]', function() {
 		const passenger = new Passenger(3, 5);
 		const elevator = new Elevator([4, 0], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
-		expect(elevator.stops).toEqual([4, 0, 3, 5]);
+		expect(elevator.stops).toEqual([4, 0, 5]);
 });
 
 it('orderElevatorStops should edit elevator stops to [9, 0] when passenger goes 4 -> 0 and elevator stops are [9,8]', function() {
 		const passenger = new Passenger(4, 0);
 		const elevator = new Elevator([9, 8], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([9, 0]);
 });
@@ -62,63 +62,63 @@ it('orderElevatorStops should edit elevator stops to [9, 0] when passenger goes 
 it('orderElevatorStops should edit elevator stops to [5, 10] when passenger goes 7 -> 8 and elevator stops are [5,10]', function() {
 		const passenger = new Passenger(7, 8);
 		const elevator = new Elevator([5, 10], 'a');
-		orderElevatorStops(passenger, elevator, true);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([5, 10]);
 });
 
-it('orderElevatorStops should edit elevator stops to [4, 5] when passenger goes 5 -> 2 and elevator stops are [4, 5, 2]', function() {
+it('orderElevatorStops should edit elevator stops to [4, 5, 2] when passenger goes 5 -> 2 and elevator stops are [4, 5]', function() {
 		const passenger = new Passenger(5, 2);
 		const elevator = new Elevator([4, 5], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([4, 5, 2]);
 });
 
-it('orderElevatorStops should edit elevator stops to [4, 5, 2] when passenger goes 8 -> 7 and elevator stops are [4, 5, 2, 8, 7]', function() {
+it('orderElevatorStops should edit elevator stops to [4, 5, 2, 8, 7] when passenger goes 8 -> 7 and elevator stops are [4, 5, 2]', function() {
 		const passenger = new Passenger(8, 7);
 		const elevator = new Elevator([4, 5, 2], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([4, 5, 2, 8, 7]);
 });
 
-it('orderElevatorStops should edit elevator stops to [10, 6] when passenger goes 2 -> 5 and elevator stops are [10, 2, 5]', function() {
+it('orderElevatorStops should edit elevator stops to [10, 2, 5] when passenger goes 2 -> 5 and elevator stops are [10, 6]', function() {
 		const passenger = new Passenger(2, 5);
 		const elevator = new Elevator([10, 6], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([10, 2, 5]);
 });
 
-it('orderElevatorStops should edit elevator stops to [1, 2] when passenger goes 3 -> 2 and elevator stops are [1, 3, 2]', function() {
+it('orderElevatorStops should edit elevator stops to [1, 3, 2] when passenger goes 3 -> 2 and elevator stops are [1, 2]', function() {
 		const passenger = new Passenger(3, 2);
 		const elevator = new Elevator([1, 2], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([1, 3, 2]);
 });
 
-it('orderElevatorStops should edit elevator stops to [5, 9] when passenger goes 7 -> 1 and elevator stops are [5, 9, 1]', function() {
+it('orderElevatorStops should edit elevator stops to [5, 9, 1] when passenger goes 7 -> 1 and elevator stops are [5, 9]', function() {
 		const passenger = new Passenger(7, 1);
 		const elevator = new Elevator([5, 9], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([5, 9, 1]);
 });
 
-it('orderElevatorStops should edit elevator stops to [10, 2] when passenger goes 8 -> 3 and elevator stops are [10, 2, 8, 3]', function() {
+it('orderElevatorStops should edit elevator stops to [10, 2] when passenger goes 8 -> 3 and elevator stops are [10, 2]', function() {
 		const passenger = new Passenger(8, 3);
 		const elevator = new Elevator([10, 2], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
-		expect(elevator.stops).toEqual([10, 2, 8, 3]);
+		expect(elevator.stops).toEqual([10, 2]);
 });
 
 it('orderElevatorStops should edit elevator stops to [1, 1] when passenger goes 5 -> 6 and elevator stops are [1,6]', function() {
 		const passenger = new Passenger(5, 6);
 		const elevator = new Elevator([1, 1], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([1, 6]);
 });
@@ -126,15 +126,23 @@ it('orderElevatorStops should edit elevator stops to [1, 1] when passenger goes 
 it('orderElevatorStops should edit elevator stops to [7, 1] when passenger goes 0 -> 10 and elevator stops are [7, 0, 10]', function() {
 		const passenger = new Passenger(0, 10);
 		const elevator = new Elevator([7, 1], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([7, 0, 10]);
 });
 
-it('orderElevatorStops should edit elevator stops to [5,8,1,3,2] when passenger goes 2 -> 1 and elevator stops are [5, 8, 1, 3, 1]', function() {
+it('orderElevatorStops should edit elevator stops to [5,8,1,3,1] when passenger goes 2 -> 1 and elevator stops are [5, 8, 1, 3, 2]', function() {
 		const passenger = new Passenger(2, 1);
 		const elevator = new Elevator([5,8,1,3,2], 'a');
-		orderElevatorStops(passenger, elevator, false);
+		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([5, 8, 1, 3, 1]);
+});
+
+it('orderElevatorStops should edit elevator stops to [5,10,1,8] when passenger goes 1 -> 8 and elevator stops are [5,10]', function() {
+		const passenger = new Passenger(1, 8);
+		const elevator = new Elevator([5,10], 'a');
+		orderElevatorStops(passenger, elevator);
+
+		expect(elevator.stops).toEqual([5,10,1,8]);
 });

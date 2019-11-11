@@ -7,6 +7,7 @@ export default class Elevator {
 				const stopsCount = stops.length - 1;
 				this.currentDirection = getDirection(stops[stopsCount - 1], stops[stopsCount] && stops[stopsCount]);
 				this.stops = stops;
+				this.passengersOffAtStop = [];
 		}
 
 		addStop(floor) {
@@ -16,7 +17,7 @@ export default class Elevator {
 		}
 
 		getElevatorProximity(passenger, stops) { // onWatTo array of stop where last one is last stop
-				let result = { distance: 0, isOnWay: false };
+				let result = { distance: 0};
 				const passengerDirection = getDirection(passenger.currentFloor, passenger.destination);
 				let elevatorDirection = this.currentDirection;
 
@@ -27,7 +28,6 @@ export default class Elevator {
 								if (isInRange(passenger.currentFloor, stops[index], stops[index + 1])) { // passenger currentFloor on range of current way
 										if (stops[index + 1] >= passenger.destination) { // no added stop
 												result.distance = result.distance + Math.abs(passenger.currentFloor - stops[index]);
-												result.isOnWay = true;
 												break;
 										} else {
 												result.distance = result.distance + Math.abs(stops[index] - stops[index + 1]);

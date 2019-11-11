@@ -25,76 +25,68 @@ it('getElevatorProximity should return 10 when elevator going 8 -> 14 and passen
 		expect(distance).toEqual(10);
 });
 
-it('getElevatorProximity should return {distance: 9, isOnWay: false} when elevator going 3 -> 6 -> 1 and passenger going 2 -> 6', function() {
+it('getElevatorProximity should return {distance: 9} when elevator going 3 -> 6 -> 1 and passenger going 2 -> 6', function() {
 		const elevator = new Elevator([3, 6, 1], 'a');
 		const passenger = new Passenger(2,6);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(9);
-		expect(isOnWay).toEqual(false);
 });
 
-it('getElevatorProximity should return {distance: 4, isOnWay: true} when elevator going 6 -> 2 -> 8 -> 4 and passenger going 2 -> 6', function() {
+it('getElevatorProximity should return {distance: 4} when elevator going 6 -> 2 -> 8 -> 4 and passenger going 2 -> 6', function() {
 		const elevator = new Elevator([6, 2, 8, 4], 'a');
 		const passenger = new Passenger(2,6);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(4);
-		expect(isOnWay).toEqual(true);
 });
 
-it('getElevatorProximity should return {distance: 4, isOnWay: true} when elevator going 2 -> 4 -> 3 -> 5 and passenger going 3 -> 2', function() {
+it('getElevatorProximity should return {distance: 4} when elevator going 2 -> 4 -> 3 -> 5 and passenger going 3 -> 2', function() {
 		const elevator = new Elevator([2, 4, 3, 5], 'a');
 		const passenger = new Passenger(3,2);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(7);
-		expect(isOnWay).toEqual(false);
 });
 
-it('getElevatorProximity should return {distance: 12, isOnWay: false} when elevator going 3 -> 6 -> 0 and passenger going 3 -> 0', function() {
+it('getElevatorProximity should return {distance: 12} when elevator going 3 -> 6 -> 0 and passenger going 3 -> 0', function() {
 		const elevator = new Elevator([3, 6, 0], 'a');
 		const passenger = new Passenger(3,0);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(12);
-		expect(isOnWay).toEqual(false);
 });
 
-it('getElevatorProximity should return {distance: 10, isOnWay: false} when elevator going 0 -> 0 -> 7 and passenger going 10 -> 9', function() {
+it('getElevatorProximity should return {distance: 10} when elevator going 0 -> 0 -> 7 and passenger going 10 -> 9', function() {
 		const elevator = new Elevator([0, 0, 7], 'a');
 		const passenger = new Passenger(10,9);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(10);
-		expect(isOnWay).toEqual(false);
 });
 
-it('getElevatorProximity should return {distance: 18, isOnWay: false} when elevator going 6 -> 7 -> 0 and passenger going 10 -> 9', function() {
+it('getElevatorProximity should return {distance: 18} when elevator going 6 -> 7 -> 0 and passenger going 10 -> 9', function() {
 		const elevator = new Elevator([6, 7, 0], 'a');
 		const passenger = new Passenger(10,9);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(18);
-		expect(isOnWay).toEqual(false);
 });
 
-it('getElevatorProximity should return {distance: 19, isOnWay: false} when elevator going 1 -> 10 and passenger going 0 -> 4', function() {
+it('getElevatorProximity should return {distance: 19} when elevator going 1 -> 10 and passenger going 0 -> 4', function() {
 		const elevator = new Elevator([1, 10], 'a');
 		const passenger = new Passenger(0,4);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(19);
-		expect(isOnWay).toEqual(false);
 });
 
-it('getElevatorProximity should return {distance: 3, isOnWay: false} when elevator going 7 -> 7 and passenger going 0 -> 4', function() {
+it('getElevatorProximity should return {distance: 3} when elevator going 7 -> 7 and passenger going 0 -> 4', function() {
 		const elevator = new Elevator([7, 7], 'a');
 		const passenger = new Passenger(0,4);
-		const {distance, isOnWay} = elevator.getElevatorProximity(passenger, elevator.stops);
+		const {distance} = elevator.getElevatorProximity(passenger, elevator.stops);
 
 		expect(distance).toEqual(7);
-		expect(isOnWay).toEqual(false);
 });
 
 

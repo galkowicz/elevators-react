@@ -26,7 +26,6 @@ export function goToFloor(passenger, elevators) {
 		const indexOfChosenElevator = getIndexOfMin(proximityArray);
 		return {
 				elevator: elevators[indexOfChosenElevator],
-				isOnWay: proximityArrayWithWay[indexOfChosenElevator].isOnWay
 		};
 }
 
@@ -59,9 +58,10 @@ export function generatePassengers(amount, buildingFloors) {
 		return passengerArray;
 }
 
-export function orderElevatorStops(passenger, elevator, isOnWay) {
+export function orderElevatorStops(passenger, elevator) {
 		const lastStop = elevator.stops.slice(-1)[0];
 		const stopsLength = elevator.stops.length;
+
 
 		if (elevator.currentDirection === IDLE) {
 				if (passenger.direction === UP) {
@@ -82,41 +82,49 @@ export function orderElevatorStops(passenger, elevator, isOnWay) {
 				return;
 		}
 
-		if (!isOnWay) { // not on current route so add new stop/s
-						if (elevator.currentDirection === passenger.direction) { // both on same direction
-								if (passenger.direction === UP) { // both going up
-										if (passenger.destination >= lastStop) {
-												elevator.stops[stopsLength - 1] = passenger.destination; // replace last stop
-										} else {
-												elevator.addStop(passenger.currentFloor);
-												elevator.addStop(passenger.destination);
-										}
-								} else { // both going down
-										if (passenger.currentFloor <= lastStop) {
-												elevator.stops[stopsLength - 1] = passenger.destination; // replace last stop
-										} else {
-												elevator.addStop(passenger.currentFloor);
-												elevator.addStop(passenger.destination);
-										}
-								}
-						} else { // not on same direction
-								if (passenger.direction === UP) { // passenger goes up elevator goes down
-										if (passenger.currentFloor <= lastStop) {
-												elevator.stops[stopsLength - 1] = passenger.currentFloor;
-												elevator.addStop(passenger.destination);
-										} else {
-												elevator.addStop(passenger.currentFloor);
-												elevator.addStop(passenger.destination);
-										}
-								} else { // passenger goes down elevator goes up
-										if (passenger.currentFloor >= lastStop) {
-												elevator.stops[stopsLength - 1] = passenger.currentFloor;
-												elevator.addStop(passenger.destination);
-										} else {
-												elevator.addStop(passenger.destination);
-										}
+		if (elevator.currentDirection === passenger.direction) { // both on same direction
+				if (passenger.direction === UP) { // both going up
+						if (passenger.destination >= lastStop) {
+								elevator.stops[stopsLength - 1] = passenger.destination; // replace last stop
+						} else {
+								if (passenger.currentFloor < elevator.stops[stopsLength - 2]) {
+										elevator.addStop(passenger.currentFloor);
+										elevator.addStop(passenger.destination);
 								}
 						}
+				} else { // both going down
+						if (passenger.currentFloor <= lastStop) {
+								elevator.stops[stopsLength - 1] = passenger.destination; // replace last stop
+						} else {
+								if (passenger.currentFloor > elevator.stops[stopsLength - 2]) {
+										elevator.addStop(passenger.currentFloor);
+										elevator.addStop(passenger.destination);
+								}
+						}
+				}
+		} else { // not on same direction
+				if (passenger.direction === UP) { // passenger goes up elevator goes down
+						if (passenger.currentFloor <= lastStop) {
+								elevator.stops[stopsLength - 1] = passenger.currentFloor;
+								elevator.addStop(passenger.destination);
+						} else {
+								elevator.addStop(passenger.destination);
+						}
+				} else { // passenger goes down elevator goes up
+						if (passenger.currentFloor >= lastStop) {
+								elevator.stops[stopsLength - 1] = passenger.currentFloor;
+								elevator.addStop(passenger.destination);
+						} else {
+								elevator.addStop(passenger.destination);
+						}
+				}
+		}
+
+		const passengersOffBy = elevator.passengersOffAtStop[stopsLength - 1];
+		if (passengersOffBy) {
+				elevator.passengersOffAtStop[stopsLength] = passengersOffBy + 1;
+		} else {
+				elevator.passengersOffAtStop[stopsLength] = 1;
 		}
 }
 
