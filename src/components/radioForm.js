@@ -4,7 +4,7 @@ import { Form, Radio } from 'semantic-ui-react';
 export default class RadioForm extends Component {
 		constructor(props) {
 				super(props);
-				this.state = {value: 'level1'};
+				this.state = props.initialState;
 		}
 
 		handleChange = (e, { value }) => {

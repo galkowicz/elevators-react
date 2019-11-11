@@ -60,7 +60,7 @@ export function generatePassengers(amount, buildingFloors) {
 
 export function orderElevatorStops(passenger, elevator) {
 		const lastStop = elevator.stops.slice(-1)[0];
-		const stopsLength = elevator.stops.length;
+		let stopsLength = elevator.stops.length;
 
 
 		if (elevator.currentDirection === IDLE) {
@@ -79,6 +79,7 @@ export function orderElevatorStops(passenger, elevator) {
 								elevator.stops[stopsLength - 1] = passenger.destination;
 						}
 				}
+				addPassengerOffAtStop(elevator);
 				return;
 		}
 
@@ -119,12 +120,17 @@ export function orderElevatorStops(passenger, elevator) {
 						}
 				}
 		}
+		addPassengerOffAtStop(elevator);
+}
+
+function addPassengerOffAtStop(elevator) {
+		let stopsLength = elevator.stops.length;
 
 		const passengersOffBy = elevator.passengersOffAtStop[stopsLength - 1];
 		if (passengersOffBy) {
-				elevator.passengersOffAtStop[stopsLength] = passengersOffBy + 1;
+				elevator.passengersOffAtStop[stopsLength - 1] = passengersOffBy + 1;
 		} else {
-				elevator.passengersOffAtStop[stopsLength] = 1;
+				elevator.passengersOffAtStop[stopsLength - 1] = 1;
 		}
 }
 
@@ -136,6 +142,21 @@ export function calculateTotalTravelTime(elevator, timeForFloor = 2) {
 						return a + Math.abs(array[index - 1] - b);
 				}
 		})
+}
+
+export function elevatorLocationAfterTime(elevatorStops, time = 60, timeForFloor = 2) {
+		let timer = time;
+
+		for (let i = 0; i < elevatorStops.length; i++) {
+				let distance = Math.abs(elevatorStops[i] - elevatorStops[i + 1]);
+				timer = timer - (distance * timeForFloor);
+
+				if (timer < 0) {
+						return i;
+				}
+		}
+
+		return elevatorStops.length;
 }
 
 export function getDirection(from, to) {

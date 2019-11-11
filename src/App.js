@@ -2,14 +2,21 @@ import React, { useState } from 'react';
 import './App.css';
 import ElevatorForm from './components/elevatorForm';
 import RadioForm from './components/radioForm';
-import { goToFloor, generateElevators, generatePassengers, orderElevatorStops, calculateTotalTravelTime } from './util';
+import {
+		goToFloor,
+		generateElevators,
+		generatePassengers,
+		orderElevatorStops,
+		calculateTotalTravelTime,
+		elevatorLocationAfterTime
+} from './util';
 import { Container, Message, Grid, Button } from 'semantic-ui-react';
 import Passenger from './models/passenger';
 import Elevator from './models/elevator';
 
 function App() {
 		const initialFormState = { elevators: 2, floors: 10, passengerFloor: 0, passengerDestination: 0 };
-		const initialRadioState = { value: 'level1' };
+		const initialRadioState = { value: 'level3' };
 		const [radioSelection, setRadioSelection] = useState(initialRadioState);
 		const [levelOneResults, setLevelOneResults] = useState(null);
 		let intervalId;
@@ -43,26 +50,12 @@ function App() {
 		const level2 = (formData) => {
 				console.log('level2');
 				const { elevators, floors } = formData;
-				const selectedElevators = [];
 				const passengers = Math.floor(Math.random() * (6)) + 5; // random from 5 to 10
 				const passengersArray = generatePassengers(passengers, floors);
 				const elevatorsArray = generateElevators(elevators, floors);
 				let totalTime = 0;
 
-				passengersArray.forEach((passenger) => {
-						const { elevator: chosenElevatorForPassenger } = goToFloor(passenger, elevatorsArray);
-
-						if (!selectedElevators.includes(chosenElevatorForPassenger)) { // add elevator in use
-								selectedElevators.push(chosenElevatorForPassenger);
-						}
-						console.log('elevator ', chosenElevatorForPassenger.id, 'stops array: ', chosenElevatorForPassenger.stops.toString());
-						orderElevatorStops(passenger, chosenElevatorForPassenger);
-
-						console.log('new passenger: ', passenger);
-						console.log('elevator ', chosenElevatorForPassenger.id, ' new stops array: ', chosenElevatorForPassenger.stops.toString());
-						console.log('---------- ---------- ---------- ---------- ----------');
-
-				});
+				const selectedElevators = setElevatorsForPassengers(elevatorsArray, passengersArray);
 
 				selectedElevators.forEach((elevator) => {
 						totalTime = totalTime + calculateTotalTravelTime(elevator); // default set to 2 seconds per floor
@@ -74,21 +67,62 @@ function App() {
 		const level3 = (formData) => {
 				const { elevators, floors } = formData;
 				let elevatorsArray = [];
-				let second = 0;
+				let passengersArray = [];
+				let passengersOffByTime = 0;
 
 				for (let i = 0; i < elevators; i++) {
 						let elevatorId = (i + 10).toString(36);
-						elevatorsArray.push(new Elevator([0], elevatorId));
+						elevatorsArray.push(new Elevator([0, 0], elevatorId));
 				}
 
+				for (let i = 0; i < 12; i++) { // if the elevator runs for 60 seconds and every 5 seconds we randomize passengers it will run 12 times
+						const newPassengersAmount = Math.floor(Math.random() * (4)); // 0~3 new passengers
+						const newPassengers = generatePassengers(newPassengersAmount, floors);
+						passengersArray.push(...newPassengers)
+				}
 
-				intervalId = setInterval(() => {
-						second++;
-						if (second >= 60) {
-								clearInterval(intervalId);
+				const selectedElevators = setElevatorsForPassengers(elevatorsArray, passengersArray);
+
+				// foreach elevator check location after 60 seconds get index
+				selectedElevators.forEach((elevator) => {
+						elevator.locationAfterTime = elevatorLocationAfterTime(elevator.stops, 60, 2);
+
+						// check amount of passengers off on elevator journey
+						for (let i = 0; i < elevator.locationAfterTime; i++) {
+								if (elevator.passengersOffAtStop[i]) {
+										passengersOffByTime = passengersOffByTime + elevator.passengersOffAtStop[i];
+								}
 						}
-				}, 1000);
+				});
 
+				console.log('Total passengers: ', passengersArray.length);
+				console.log('Passengers off after 60 seconds: ', passengersOffByTime);
+
+				if (passengersOffByTime < (passengersArray.length / 2)) {
+						console.log('less then half were delivered');
+				} else {
+						console.log('more then half were delivered');
+				}
+
+				console.log(selectedElevators);
+		};
+
+		const setElevatorsForPassengers = (elevators, passengers) => {
+				let selectedElevators = [];
+				passengers.forEach((passenger) => {
+						const { elevator: chosenElevatorForPassenger } = goToFloor(passenger, elevators);
+
+						if (!selectedElevators.includes(chosenElevatorForPassenger)) { // add elevator in use
+								selectedElevators.push(chosenElevatorForPassenger);
+						}
+						console.log('elevator ', chosenElevatorForPassenger.id, 'stops array: ', chosenElevatorForPassenger.stops.toString());
+						orderElevatorStops(passenger, chosenElevatorForPassenger);
+						console.log('new passenger: ', passenger);
+						console.log('elevator ', chosenElevatorForPassenger.id, ' new stops array: ', chosenElevatorForPassenger.stops.toString());
+						console.log('---------- ---------- ---------- ---------- ----------');
+				});
+
+				return selectedElevators;
 		};
 
 		return (
@@ -121,7 +155,8 @@ function App() {
 							</div>
 							<div>chosen elevator id: {levelOneResults.chosenElevator.id}</div>
 					</Message>}
-					{radioSelection.value === 'level2' && <Container>
+
+					{radioSelection.value === 'level3' && <Container>
 							<Button onClick={stopInterval}> Stop interval </Button>
 					</Container>}
 			</div>

@@ -1,7 +1,7 @@
 import Elevator from './models/elevator';
 import Passenger from './models/passenger';
 import { DOWN, IDLE, UP } from './constants';
-import { getDirection, orderElevatorStops } from './util';
+import { getDirection, orderElevatorStops, elevatorLocationAfterTime } from './util';
 
 it('getDirection should return IDLE when elevator going 4 -> 4', function() {
 		const elevator = new Elevator([4, 4], 'A');
@@ -133,7 +133,7 @@ it('orderElevatorStops should edit elevator stops to [7, 1] when passenger goes 
 
 it('orderElevatorStops should edit elevator stops to [5,8,1,3,1] when passenger goes 2 -> 1 and elevator stops are [5, 8, 1, 3, 2]', function() {
 		const passenger = new Passenger(2, 1);
-		const elevator = new Elevator([5,8,1,3,2], 'a');
+		const elevator = new Elevator([5, 8, 1, 3, 2], 'a');
 		orderElevatorStops(passenger, elevator);
 
 		expect(elevator.stops).toEqual([5, 8, 1, 3, 1]);
@@ -141,8 +141,22 @@ it('orderElevatorStops should edit elevator stops to [5,8,1,3,1] when passenger 
 
 it('orderElevatorStops should edit elevator stops to [5,10,1,8] when passenger goes 1 -> 8 and elevator stops are [5,10]', function() {
 		const passenger = new Passenger(1, 8);
-		const elevator = new Elevator([5,10], 'a');
+		const elevator = new Elevator([5, 10], 'a');
 		orderElevatorStops(passenger, elevator);
 
-		expect(elevator.stops).toEqual([5,10,1,8]);
+		expect(elevator.stops).toEqual([5, 10, 1, 8]);
+});
+
+it('elevatorLocationAfterTime with following stops [2, 4, 1, 5] should be 1 after 10 seconds and 2 seconds per floor', function() {
+		const elevatorStops = [2, 4, 1, 5];
+		let index = elevatorLocationAfterTime(elevatorStops, 10);
+
+		expect(index).toEqual(2);
+});
+
+it('elevatorLocationAfterTime with following stops [0, 0, 10, 0, 10, 0, 10] should be 4 after 60 seconds and 2 seconds per floor', function() {
+		const elevatorStops = [0, 0, 10, 0, 10, 0, 10];
+		let index = elevatorLocationAfterTime(elevatorStops, 60);
+
+		expect(index).toEqual(4);
 });

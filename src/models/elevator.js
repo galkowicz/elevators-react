@@ -21,7 +21,6 @@ export default class Elevator {
 				const passengerDirection = getDirection(passenger.currentFloor, passenger.destination);
 				let elevatorDirection = this.currentDirection;
 
-
 				for (let index = 0; index < stops.length - 1; index++) {
 						elevatorDirection = getDirection(stops[index], stops[index + 1]);
 						if (passengerDirection === UP && elevatorDirection === UP) {
