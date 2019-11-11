@@ -10,16 +10,15 @@ import {
 		calculateTotalTravelTime,
 		elevatorLocationAfterTime
 } from './util';
-import { Container, Message, Grid, Button } from 'semantic-ui-react';
+import { Container, Message, Grid } from 'semantic-ui-react';
 import Passenger from './models/passenger';
 import Elevator from './models/elevator';
 
 function App() {
 		const initialFormState = { elevators: 2, floors: 10, passengerFloor: 0, passengerDestination: 0 };
-		const initialRadioState = { value: 'level3' };
+		const initialRadioState = { value: 'level1' };
 		const [radioSelection, setRadioSelection] = useState(initialRadioState);
 		const [levelOneResults, setLevelOneResults] = useState(null);
-		let intervalId;
 
 		const handleFormSubmit = (formData) => {
 				const map = { level1, level2, level3 };
@@ -28,10 +27,6 @@ function App() {
 
 		const handleRadioChange = (value) => {
 				setRadioSelection(value);
-		};
-
-		const stopInterval = () => {
-				clearInterval(intervalId);
 		};
 
 		const level1 = (formData) => {
@@ -155,10 +150,6 @@ function App() {
 							</div>
 							<div>chosen elevator id: {levelOneResults.chosenElevator.id}</div>
 					</Message>}
-
-					{radioSelection.value === 'level3' && <Container>
-							<Button onClick={stopInterval}> Stop interval </Button>
-					</Container>}
 			</div>
 		);
 }
